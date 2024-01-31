@@ -1,11 +1,11 @@
-import { BasicLightBox } from 'basiclightbox';
+//import { BasicLightBox } from 'basiclightbox';
 import css from './Modal/Modal.module.css';
-import propTypes from 'prop-types';
+//import propTypes from 'prop-types';
 import { Component } from 'react';
 
 class Modal extends Component {
 
-    
+
   render() {
     return (
       <div class={css.overlay}>
@@ -16,3 +16,5 @@ class Modal extends Component {
     );
   }
 }
+
+export default Modal;

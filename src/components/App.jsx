@@ -1,9 +1,10 @@
 import { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
-//import Loader from "./Loader/Loader";
-//import Button from "./Button/Button";
-//import Modal from "./Modal/Modal";
+import ImageGalleryItem from './ImageGallery/ImageGalleryItem/ImageGalleryItem';
+import Loader from "./Loader/Loader";
+import Button from "./Button/Button";
+import Modal from "./Modal/Modal";
 import axios from 'axios';
 import Notiflix from 'notiflix';
 
@@ -78,7 +79,25 @@ class App extends Component {
     return (
       <div>
         <Searchbar onSubmit={this.searchImages} />
-        <ImageGallery />
+        <ImageGallery>
+          {this.images.map(image => (
+            <ImageGalleryItem
+              key={image.id}
+              prewImgUrl={image.webformatURL}
+              largeImgUrl={image.largeImageURL}
+              tags={image.tags}
+              handleClick={this.showModal}
+            />
+          ))}
+        </ImageGallery>
+        {this.isLoading && <Loader />}
+        {this.error && <p>Sth went wrong...{this.error.message}</p>}
+        {this.showLoadMore() > 0 && (
+          <Button handleClick={this.loadMoreImages} />
+        )}
+        {this.modalIsOpen && (
+          <Modal src={this.largeImageUrl} handleClick={this.handleClickModal} />
+        )}
       </div>
     );
   }
