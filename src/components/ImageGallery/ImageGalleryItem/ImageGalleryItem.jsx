@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import css from './ImageGalleryItem/ImageGalleryItem.module.css';
+import css from './ImageGalleryItem.module.css';
 
 const ImageGalleryItem = ({ prewImgUrl, largeImgUrl, tags, handleClick }) => {
   return (
     <li className={css.imageGalleryItem} onClick={() => handleClick(largeImgUrl)}>
-      <img src={prewImgUrl} alt={tags} className={css.imageGalleryItem-image} />
+      <img src={prewImgUrl} alt={tags} className={css.imageGalleryItemImage} />
     </li>
   );
 };

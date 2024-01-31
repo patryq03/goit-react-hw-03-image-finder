@@ -1,20 +1,15 @@
-//import { BasicLightBox } from 'basiclightbox';
-import css from './Modal/Modal.module.css';
-//import propTypes from 'prop-types';
-import { Component } from 'react';
+import css from './Modal.module.css';
 
-class Modal extends Component {
+const Modal = ({handleClick, src}) => {
 
-
-  render() {
     return (
-      <div class={css.overlay}>
+      <div class={css.overlay} onClick={handleClick}>
         <div class={css.modal}>
-          <img src="" alt="" />
+          <img src={src} alt="" />
         </div>
       </div>
     );
-  }
-}
+  };
+
 
 export default Modal;

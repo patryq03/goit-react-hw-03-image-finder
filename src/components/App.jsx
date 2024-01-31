@@ -2,11 +2,12 @@ import { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import ImageGalleryItem from './ImageGallery/ImageGalleryItem/ImageGalleryItem';
-import Loader from "./Loader/Loader";
-import Button from "./Button/Button";
-import Modal from "./Modal/Modal";
+import Loader from './Loader/Loader';
+import Button from './Button/Button';
+import Modal from './Modal/Modal';
 import axios from 'axios';
 import Notiflix from 'notiflix';
+
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 const apiKey = '41316122-8be1516af8b9dd89b7470b6b1';
@@ -35,11 +36,32 @@ class App extends Component {
       searchQuery: `${Date.now()}/${query}`,
     });
   };
-
-  sloadMoreImages = (prev) =>{
-    this.setState({activePage: prev.activePage + 1});
+  showLoadMore = () => {
+    const { images, totalImages, activePage} = this.state;
+    if(images.length>0 && totalImages - perPage * activePage >0){
+      return true;
+    }
+  }
+  showModal = largeImageURL => {
+    this.setState({
+      modalIsOpen: true,
+      largeImageURL: largeImageURL,
+    })
+  }
+  closeModal = () =>{
+    this.setState({
+      modalIsOpen: false,
+    })
+  }
+  handleClickModal = (event) =>{
+    if (event.target.nodeName !=='IMG') {
+      this.closeModal();
+    }
+  }
+  loadMoreImages = prev => {
+    this.setState({ activePage: prev.activePage + 1 });
   };
-  
+
   componentDidUpdate = (prevProps, prevState) => {
     const prevQuery = prevState.searchQuery;
     const nextQuery = this.state.searchQuery;
@@ -51,17 +73,33 @@ class App extends Component {
     }
   };
 
-  getCharacters = async () => {
+  getImages = async () => {
     this.setState({
       isLoading: true,
     });
+    console.log(this.isLoading);
 
-    const { activePage } = this.state;
+    const { activePage, searchQuery } = this.state;
+    const separated = searchQuery.split('/');
+    const exstractedQuery = separated[1];
     try {
-      const { data } = await axios(`?page=${activePage}`);
-      console.log(data);
-
-      //this.setState({});
+      const { data } = await axios({
+        params: {
+          q: exstractedQuery,
+          page: activePage,
+          key: apiKey,
+          image_type: 'photo',
+          orientation: 'horizontal',
+          per_page: perPage,
+        },
+      });
+      if (data.total === 0) {
+        Notiflix.Notify.warning(`I couldn't find any images`);
+      }
+      this.setState(prevState => ({
+        images: [...prevState.images, ...data.hits],
+        totalImages: data.total,
+      }));
     } catch (error) {
       this.setState({
         error,
@@ -72,15 +110,25 @@ class App extends Component {
       });
     }
   };
-  async componentDidMount() {
-    await this.getCharacters();
+  handleKeyDown = event =>{
+    if(event.key === 'Escape' && this.state.modalIsOpen){
+      this.closeModal();
+    }
+  };
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
   }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
   render() {
+    const { images, isLoading, modalIsOpen, largeImageUrl, error } = this.state;
     return (
       <div>
         <Searchbar onSubmit={this.searchImages} />
         <ImageGallery>
-          {this.images.map(image => (
+          {images.map(image => (
             <ImageGalleryItem
               key={image.id}
               prewImgUrl={image.webformatURL}
@@ -90,13 +138,13 @@ class App extends Component {
             />
           ))}
         </ImageGallery>
-        {this.isLoading && <Loader />}
-        {this.error && <p>Sth went wrong...{this.error.message}</p>}
+        {isLoading && <Loader />}
+        {error && <p>Sth went wrong...{error.message}</p>}
         {this.showLoadMore() > 0 && (
           <Button handleClick={this.loadMoreImages} />
         )}
-        {this.modalIsOpen && (
-          <Modal src={this.largeImageUrl} handleClick={this.handleClickModal} />
+        {modalIsOpen && (
+          <Modal src={largeImageUrl} handleClick={this.handleClickModal} />
         )}
       </div>
     );

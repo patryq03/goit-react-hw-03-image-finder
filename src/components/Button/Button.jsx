@@ -1,17 +1,17 @@
-//import propTypes from "prop-types";
-import css from './Button/Button.module.css';
-import { Component } from "react";
+import propTypes from "prop-types";
+import css from './Button.module.css';
 
-class Button extends Component{
+const Button = ({handleClick}) =>{
 
-
-
-    render(){
-        return(
+       return(
             <div>
-                <button className={css.Button}>Load More</button>
+                <button className={css.Button} onClick={handleClick}>Load More</button>
             </div>
         )
-    }
+    
 }
 export default Button;
+
+Button.propTypes = {
+    handleClick: propTypes.func.isRequired,
+};

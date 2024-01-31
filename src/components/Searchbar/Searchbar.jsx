@@ -1,23 +1,23 @@
-//import propTypes from "prop-types";
+import propTypes from "prop-types";
 import { Component } from 'react';
 import css from './Searchbar.module.css';
-import propTypes from 'prop-types';
+
 
 class Searchbar extends Component {
   state = {
     inputText: '',
   };
-
-  handleSubmit = event => {
+  
+  handleChange = event => {
     this.setState({ inputText: event.target.value });
   };
-  handleChange = event => {
+  handleSubmit = event => {
     const form = event.currentTarget;
     event.preventDefault();
     this.props.onSubmit(this.state.inputText);
     this.setState({
       inputText: '',
-    })
+    });
     form.reset();
   };
   render() {
