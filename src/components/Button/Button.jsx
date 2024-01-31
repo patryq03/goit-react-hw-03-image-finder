@@ -4,8 +4,8 @@ import css from './Button.module.css';
 const Button = ({handleClick}) =>{
 
        return(
-            <div>
-                <button className={css.Button} onClick={handleClick}>Load More</button>
+            <div className={css.div}>
+                <button className={css.button} onClick={handleClick}>Load More</button>
             </div>
         )
     
