@@ -36,30 +36,9 @@ class App extends Component {
       searchQuery: `${Date.now()}/${query}`,
     });
   };
-  showLoadMore = () => {
-    const { images, totalImages, activePage} = this.state;
-    if(images.length>0 && totalImages - perPage * activePage >0){
-      return true;
-    }
-  }
-  showModal = largeImageURL => {
-    this.setState({
-      modalIsOpen: true,
-      largeImageURL: largeImageURL,
-    })
-  }
-  closeModal = () =>{
-    this.setState({
-      modalIsOpen: false,
-    })
-  }
-  handleClickModal = (event) =>{
-    if (event.target.nodeName !=='IMG') {
-      this.closeModal();
-    }
-  }
-  loadMoreImages = prev => {
-    this.setState({ activePage: prev.activePage + 1 });
+
+  loadMoreImages = () => {
+    this.setState(prev => ({ activePage: prev.activePage + 1 }));
   };
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -73,12 +52,50 @@ class App extends Component {
     }
   };
 
+  showLoadMore = () => {
+    const { images, totalImages, activePage } = this.state;
+    if (images.length > 0 && totalImages - perPage * activePage > 0) {
+      return true;
+    }
+  };
+
+  showModal = largeImageUrl => {
+    this.setState({
+      modalIsOpen: true,
+      largeImageUrl: largeImageUrl,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      modalIsOpen: false,
+    });
+  };
+
+  handleClickModal = evt => {
+    if (evt.target.nodeName !== 'IMG') {
+      this.closeModal();
+    }
+  };
+
+  handleKeyDown = evt => {
+    if (evt.key === 'Escape' && this.state.modalIsOpen) {
+      this.closeModal();
+    }
+  };
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
   getImages = async () => {
     this.setState({
       isLoading: true,
     });
-    console.log(this.isLoading);
-
     const { activePage, searchQuery } = this.state;
     const separated = searchQuery.split('/');
     const exstractedQuery = separated[1];
@@ -94,7 +111,8 @@ class App extends Component {
         },
       });
       if (data.total === 0) {
-        Notiflix.Notify.warning(`I couldn't find any images`);
+        Notiflix.Notify.warning(`
+I couldn't find any images`);
       }
       this.setState(prevState => ({
         images: [...prevState.images, ...data.hits],
@@ -110,17 +128,7 @@ class App extends Component {
       });
     }
   };
-  handleKeyDown = event =>{
-    if(event.key === 'Escape' && this.state.modalIsOpen){
-      this.closeModal();
-    }
-  };
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
+
 
   render() {
     const { images, isLoading, modalIsOpen, largeImageUrl, error } = this.state;
