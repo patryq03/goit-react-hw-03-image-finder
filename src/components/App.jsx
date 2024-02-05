@@ -8,7 +8,6 @@ import Modal from './Modal/Modal';
 import axios from 'axios';
 import Notiflix from 'notiflix';
 
-
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 const apiKey = '41316122-8be1516af8b9dd89b7470b6b1';
 const perPage = 12;
@@ -128,7 +127,6 @@ I couldn't find any images`);
       });
     }
   };
-
 
   render() {
     const { images, isLoading, modalIsOpen, largeImageUrl, error } = this.state;

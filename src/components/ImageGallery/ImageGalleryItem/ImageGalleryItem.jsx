@@ -3,7 +3,10 @@ import css from './ImageGalleryItem.module.css';
 
 const ImageGalleryItem = ({ prewImgUrl, largeImgUrl, tags, handleClick }) => {
   return (
-    <li className={css.imageGalleryItem} onClick={() => handleClick(largeImgUrl)}>
+    <li
+      className={css.imageGalleryItem}
+      onClick={() => handleClick(largeImgUrl)}
+    >
       <img src={prewImgUrl} alt={tags} className={css.imageGalleryItemImage} />
     </li>
   );
